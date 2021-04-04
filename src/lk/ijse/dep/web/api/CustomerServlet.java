@@ -25,7 +25,7 @@ public class CustomerServlet extends HttpServlet {
         BasicDataSource cp = (BasicDataSource) getServletContext().getAttribute("cp");
 
         resp.addHeader("Access-Control-Allow-Origin","http://localhost:3000");
-        resp.setContentType("application/xml");
+        resp.setContentType("application/json");
         try(PrintWriter out=resp.getWriter()) {
 
 //            out.println(getServletContext().getAttribute("abc"));
@@ -34,19 +34,20 @@ public class CustomerServlet extends HttpServlet {
                 Connection connection = cp.getConnection();
                 Statement stm = connection.createStatement();
                 ResultSet rst = stm.executeQuery("SELECT * FROM customer");
-                out.println("<customers>");
+                String json=("[");
                 while (rst.next()) {
                     String id = rst.getString(1);
                     String name = rst.getString(2);
                     String address = rst.getString(3);
-                    out.println("<customer>" +
-                            "<id>" + id + "</id>"+
-                            "<name>" + name + "</name>"+
-                            "<address>" + address + "</address>"+
-                            "</customer>");
-
+                    json+= ("{"+
+                            "\"id\":\""+id+"\","+
+                            "\"name\":\""+name+"\","+
+                            "\"address\":\""+address+"\""+
+                            "},");
                 }
-                out.println("</customers>");
+                json=json.substring(0,json.length()-1);
+                json+=("]");
+                out.println(json);
                 connection.close();
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
