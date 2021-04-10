@@ -14,10 +14,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.math.BigDecimal;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 
 /**
@@ -29,36 +26,48 @@ public class ItemServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        BasicDataSource cp= (BasicDataSource)getServletContext().getAttribute("cp");
 
     }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String code = req.getParameter("code");
+
         BasicDataSource cp = (BasicDataSource) getServletContext().getAttribute("cp");
         resp.addHeader("Access-Control-Allow-Origin","http://localhost:3000");
         resp.setContentType("application/json");
-        try (PrintWriter out = resp.getWriter()) {
-            try {
-                Connection connection = cp.getConnection();
-                Statement stm = connection.createStatement();
-                ResultSet rst = stm.executeQuery("SELECT * FROM item");
+
+            try(Connection connection = cp.getConnection();) {
+                PrintWriter out = resp.getWriter();
+
+                PreparedStatement pstm = connection.prepareStatement("SELECT * FROM item" + ((code!=null)?" WHERE code=?":""));
+                if(code!=null){
+                    pstm.setObject(1,code);
+                }
+                ResultSet rst = pstm.executeQuery();
 
                 ArrayList<Item> itemList =new ArrayList<>();
 
                 while(rst.next()){
-                    String code = rst.getString(1);
+                    code = rst.getString(1);
                     String description = rst.getString(2);
                     BigDecimal unitPrice = rst.getBigDecimal(3).setScale(2);
                     int qtyOnHand = rst.getInt(4);
                     itemList.add(new Item(code,description,qtyOnHand,unitPrice));
                 }
-                Jsonb jsonb = JsonbBuilder.create();
-                out.println(jsonb.toJson(itemList));
-                connection.close();
+
+                if (code != null && itemList.isEmpty()) {
+                    resp.sendError(HttpServletResponse.SC_NOT_FOUND);
+                }else{
+                    Jsonb jsonb = JsonbBuilder.create();
+                    out.println(jsonb.toJson(itemList));
+                }
+
             } catch (SQLException throwables) {
-                throwables.printStackTrace();
+                resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             }
-        }
+
     }
 
 
