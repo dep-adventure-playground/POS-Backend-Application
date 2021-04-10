@@ -151,7 +151,6 @@ public class CustomerServlet extends HttpServlet {
 
             if (!customer.getId().matches("C\\d{3}") || customer.getName().trim().isEmpty() || customer.getAddress()
                     .trim().isEmpty()) {
-                System.out.println("hi");
                 resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
                 return;
             }
