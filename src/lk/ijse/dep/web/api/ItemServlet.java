@@ -133,7 +133,7 @@ public class ItemServlet extends HttpServlet {
         try(Connection connection=cp.getConnection()) {
             Jsonb jsonb=JsonbBuilder.create();
             Item item = jsonb.fromJson(req.getReader(), Item.class);
-            System.out.println(item);
+
             /*   Validation Logic  */
             if(item.getCode()==null || item.getDescription()==null || item.getQtyOnHand()==0 || item.getUnitPrice()==null){
                 resp.sendError(HttpServletResponse.SC_BAD_REQUEST);

@@ -140,8 +140,19 @@ public class CustomerServlet extends HttpServlet {
         BasicDataSource cp = (BasicDataSource) getServletContext().getAttribute("cp");
 
         try (Connection connection = cp.getConnection();) {
-            Jsonb jsonb = JsonbBuilder.create();
-            Customer customer = jsonb.fromJson(req.getReader(), Customer.class);
+
+            Customer customer;
+            if(req.getContentType().equals("application/json")){
+                Jsonb jsonb = JsonbBuilder.create();
+                customer = jsonb.fromJson(req.getReader(), Customer.class);
+            }else{
+                /* application/x-www-form-urlencoded */
+                String id = req.getParameter("id");
+                String name = req.getParameter("name");
+                String address = req.getParameter("address");
+                customer=new Customer(id,name,address);
+            }
+
 
             /*   Validation Logic  */
             if (customer.getId() == null || customer.getName() == null || customer.getAddress() == null) {
