@@ -128,7 +128,7 @@ public class ItemServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        System.out.println("ABC");
+
         BasicDataSource cp= (BasicDataSource)getServletContext().getAttribute("cp");
         try(Connection connection=cp.getConnection()) {
             Jsonb jsonb=JsonbBuilder.create();
@@ -141,7 +141,7 @@ public class ItemServlet extends HttpServlet {
             }
 
             if (!item.getCode().matches("P\\d{3}") || item.getDescription().trim().isEmpty() ||
-                    item.getUnitPrice().compareTo(new BigDecimal("0"))!=1 || item.getQtyOnHand()<0) {
+                    item.getUnitPrice().compareTo(new BigDecimal("0"))!=1 || item.getQtyOnHand()<=0) {
                 resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
                 return;
             }

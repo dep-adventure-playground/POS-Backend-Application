@@ -1,22 +1,18 @@
 package lk.ijse.dep.web.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Date;
 
-/**
- * @author : Shalitha Anuradha <shalithaanuradha123@gmail.com>
- * @since : 2021-04-13
- **/
-public class Order {
+public class Order implements Serializable {
     private String orderId;
-    private Date orderDate;
+    private String orderDate;
     private String customerId;
     private ArrayList<OrderDetails> orderDetails;
 
     public Order() {
     }
 
-    public Order(String orderId, Date orderDate, String customerId, ArrayList<OrderDetails> orderDetails) {
+    public Order(String orderId, String orderDate, String customerId, ArrayList<OrderDetails> orderDetails) {
         this.orderId = orderId;
         this.orderDate = orderDate;
         this.customerId = customerId;
@@ -31,11 +27,11 @@ public class Order {
         this.orderId = orderId;
     }
 
-    public Date getOrderDate() {
+    public String getOrderDate() {
         return orderDate;
     }
 
-    public void setOrderDate(Date orderDate) {
+    public void setOrderDate(String orderDate) {
         this.orderDate = orderDate;
     }
 
@@ -55,13 +51,4 @@ public class Order {
         this.orderDetails = orderDetails;
     }
 
-    @Override
-    public String toString() {
-        return "Order{" +
-                "orderId='" + orderId + '\'' +
-                ", orderDate=" + orderDate +
-                ", customerId='" + customerId + '\'' +
-                ", orderDetails=" + orderDetails +
-                '}';
-    }
 }

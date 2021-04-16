@@ -1,12 +1,9 @@
 package lk.ijse.dep.web.model;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
-/**
- * @author : Shalitha Anuradha <shalithaanuradha123@gmail.com>
- * @since : 2021-04-13
- **/
-public class OrderDetails {
+public class OrderDetails  implements Serializable {
     private String orderId;
     private String itemCode;
     private int qty;
@@ -54,13 +51,4 @@ public class OrderDetails {
         this.unitPrice = unitPrice;
     }
 
-    @Override
-    public String toString() {
-        return "OrderDetails{" +
-                "orderId='" + orderId + '\'' +
-                ", itemCode='" + itemCode + '\'' +
-                ", qty=" + qty +
-                ", unitPrice=" + unitPrice +
-                '}';
-    }
 }
